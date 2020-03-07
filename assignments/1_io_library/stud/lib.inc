@@ -89,10 +89,29 @@ read_char:
     mov rdi, 0
     mov rdx, 1
     syscall
+    cmp rax, 0
+    jz .fail
     mov rax, [rsi]
+.fail:
     ret
 
 read_word:
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, 0
+    mov rax, 0
+    syscall
+    cmp rax, 0
+    jl .err
+    cmp rax, rsi
+    je .full
+    mov byte [rsi+rax], 0
+    mov rdx, rax
+    mov rax, rsi
+    ret
+.err:
+.full:
+    xor rax, rax
     ret
 
 ; rdi points to a string
