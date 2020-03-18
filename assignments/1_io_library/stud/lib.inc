@@ -67,11 +67,11 @@ print_uint:
 print_int:
     cmp rdi, 0
     jge .L1
-    mov [rsp], rdi
+    push rdi
     mov rdi, 0x2d
     call print_char
     xor rdi, rdi
-    mov rax, [rsp]
+    pop rax
     sub rdi, rax
 .L1:
     call print_uint
@@ -137,7 +137,24 @@ parse_uint:
 ; returns rax: number, rdx : length
 parse_int:
     xor rax, rax
-    ret 
+    mov al, [rdi]
+    cmp rax, 0x2d
+    je .neg
+    cmp rax, 0x2b
+    je .pos
+    call parse_uint
+    ret
+.pos:
+    add rdi, 1
+    call parse_uint
+    add rdx, 1
+    ret
+.neg:
+    add rdi, 1
+    call parse_uint
+    add rdx, 1
+    neg rax
+    ret
 
 
 string_copy:
