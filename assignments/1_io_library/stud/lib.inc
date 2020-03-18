@@ -170,14 +170,18 @@ string_copy:
     xor rax, rax
     ret
 
-;string_equals:
-;.loop:
-;    cmp [rdi], [rsi]
-;    jne .notsame
-;    cmp [rdi], 0
-;    jnz .loop
-;    mov rax, 1
-;    ret
-;.notsame:
-;    xor rax, rax
-;    ret
+string_equals:
+.loop:
+    mov ah, [rdi]
+    mov al, [rsi]
+    cmp ah, al
+    jne .notsame
+    add rdi, 1
+    add rsi, 1
+    cmp ah, 0
+    jne .loop
+    mov rax, 1
+    ret
+.notsame:
+    xor rax, rax
+    ret
