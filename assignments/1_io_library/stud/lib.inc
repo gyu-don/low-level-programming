@@ -77,10 +77,6 @@ print_int:
     call print_uint
     ret
 
-string_equals:
-    xor rax, rax
-    ret
-
 
 read_char:
     mov rsi, rsp
@@ -117,7 +113,24 @@ read_word:
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_uint:
+    mov rcx, 10
+    xor r8, r8
     xor rax, rax
+    xor rsi, rsi
+.loop:
+    mov sil, [rdi]
+    cmp rsi, 0x30
+    jb .break
+    cmp rsi, 0x39
+    ja .break
+    sub rsi, 0x30
+    mul rcx
+    add rax, rsi
+    add r8, 1
+    add rdi, 1
+    jmp .loop
+.break:
+    mov rdx, r8
     ret
 
 ; rdi points to a string
@@ -139,3 +152,15 @@ string_copy:
 .end:
     xor rax, rax
     ret
+
+;string_equals:
+;.loop:
+;    cmp [rdi], [rsi]
+;    jne .notsame
+;    cmp [rdi], 0
+;    jnz .loop
+;    mov rax, 1
+;    ret
+;.notsame:
+;    xor rax, rax
+;    ret
